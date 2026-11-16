@@ -28,3 +28,33 @@ jobs:
 
       - name: Testes
         run: npm test
+
+  deploy:
+    name: Entrega no Render
+    needs: build-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: producao
+      url: ${{ vars.APP_URL }}
+    steps:
+      - name: Disparar o deploy no Render
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: curl -fsS -X POST "$DEPLOY_HOOK"
+
+      - name: Aguardar a nova versão entrar no ar
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          for tentativa in $(seq 1 40); do
+            RESPOSTA=$(curl -fsS --max-time 60 "$APP_URL/health" || true)
+            echo "Tentativa $tentativa: $RESPOSTA"
+            if echo "$RESPOSTA" | grep -q "$GITHUB_SHA"; then
+              echo "Nova versão publicada em $APP_URL"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "A nova versão não entrou no ar em 10 minutos."
+          exit 1
