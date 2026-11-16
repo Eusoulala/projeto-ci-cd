@@ -9,8 +9,11 @@ function criarApp() {
   const tarefas = [];
   let proximoId = 1;
 
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+    app.get('/health', (req, res) => {
+    res.json({
+      status: 'ok',
+      versao: process.env.RENDER_GIT_COMMIT || 'local',
+    });
   });
 
   app.get('/api/tarefas', (req, res) => {
