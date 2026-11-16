@@ -44,4 +44,11 @@ describe('API de tarefas', () => {
     expect(resposta.status).toBe(200);
     expect(resposta.body).toHaveLength(2);
   });
+
+  test('GET / mostra a página da lista de tarefas', async () => {
+    const resposta = await request(app).get('/');
+
+    expect(resposta.status).toBe(200);
+    expect(resposta.text).toContain('Lista de Tarefas');
+  });
 });

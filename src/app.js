@@ -1,15 +1,16 @@
+const path = require('path');
 const express = require('express');
 
 // Cada chamada de criarApp() monta um app novo, com a lista vazia.
-
 function criarApp() {
   const app = express();
-  app.use(express.json()); // permite ler JSON no corpo das requisições (eu acho)
+  app.use(express.json()); // permite ler JSON no corpo das requisições
+  app.use(express.static(path.join(__dirname, '..', 'public'))); // mostra a página da pasta public
 
   const tarefas = [];
   let proximoId = 1;
 
-    app.get('/health', (req, res) => {
+  app.get('/health', (req, res) => {
     res.json({
       status: 'ok',
       versao: process.env.RENDER_GIT_COMMIT || 'local',
