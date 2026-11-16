@@ -20,7 +20,7 @@ function criarApp() {
   app.post('/api/tarefas', (req, res) => {
     const titulo = req.body?.titulo;
 
-    if (typeof titulo !== 'string' || titulo.trim().length < 3) {
+    if (typeof titulo !== 'string' || titulo.trim().length < 1) {
       return res.status(400).json({ erro: 'O título precisa ter pelo menos 3 caracteres.' });
     }
 
